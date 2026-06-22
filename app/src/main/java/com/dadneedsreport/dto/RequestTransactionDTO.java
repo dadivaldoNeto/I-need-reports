@@ -1,7 +1,6 @@
 package com.dadneedsreport.dto;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 
 import com.dadneedsreport.enums.TransactionType;
@@ -17,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
   "date": "2026-06-22"
 }
    */
+
 public record RequestTransactionDTO (
 	@NotNull(message = "Type is required") TransactionType type,
 	@NotBlank(message = "Title is required") String title, 

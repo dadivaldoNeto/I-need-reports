@@ -16,10 +16,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "Users_transactions")
 @NoArgsConstructor
+@Getter
 public class Transaction {
 
 	@Id
