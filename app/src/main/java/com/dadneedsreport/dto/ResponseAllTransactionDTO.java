@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.models.Transaction;
 
+import lombok.Getter;
+
 /*
 {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,16 +31,12 @@ import com.dadneedsreport.models.Transaction;
 }
    */
 //IT SHOULD BE A record
-public class ResponseAllTransactionDTO {
-  private final String title;
-  private final String money;
-  private final TransactionType type;
-  private final LocalDate createdAt;
-
-  public ResponseAllTransactionDTO(Transaction entity) {
-    title = entity.getTitle();
-    money = entity.getAmount().toString();
-    type = entity.getType();
-    createdAt = entity.getCreatedAt();
-  }
+public record ResponseAllTransactionDTO(String title, String money, TransactionType type, LocalDate createdAt) {
+	public ResponseAllTransactionDTO(Transaction entity) {
+		this(
+				entity.getTitle(),
+				entity.getAmount().toString(),
+				entity.getType(),
+				entity.getCreatedAt());
+	}
 }

@@ -1,6 +1,6 @@
 package com.dadneedsreport.services;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -27,15 +27,14 @@ public class TransactionService {
 	}
 
 
-	public LinkedList<ResponseAllTransactionDTO> getTransactions() {
-		List<Transaction> datas =  incomeEntity.findAll();
+	public List<?> getTransactions() {
+		List<Transaction> transacts =  incomeEntity.findAll();
 
-		LinkedList<ResponseAllTransactionDTO> response = new LinkedList<>();
-		if (datas == null || datas.isEmpty())
-			return response;
-		for (Transaction transaction : datas) {
-			response.add(new ResponseAllTransactionDTO(transaction));
-		}
+		List<ResponseAllTransactionDTO> response = new ArrayList<>();
+
+		if (transacts == null || transacts.isEmpty())
+			return null;
+		transacts.forEach( (element) -> { response.add(new ResponseAllTransactionDTO(element)); } );
 		return (response);
 	}
 }

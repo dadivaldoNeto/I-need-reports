@@ -8,8 +8,11 @@ import com.dadneedsreport.services.TransactionService;
 
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,9 +35,9 @@ public class TransactionController {
 	}
 
 	@GetMapping("all")
-	public ResponseEntity<LinkedList<ResponseAllTransactionDTO>> getTransactions() {
-		LinkedList<ResponseAllTransactionDTO> response = transactionService.getTransactions();
-		return ResponseEntity.ok(response);
+	public List<?> getTransactions() {
+		return  transactionService.getTransactions();
+		//return ResponseEntity.ok("hi");
 	}
 	
 
