@@ -17,7 +17,7 @@ import jakarta.validation.constraints.NotNull;
 }
    */
 
-public record RequestTransactionDTO (
+public record TransactionRequest (
 	@NotNull(message = "Type is required") TransactionType type,
 	@NotBlank(message = "Title is required") String title, 
 	@NotNull(message = "Amount is required") BigDecimal amount,
