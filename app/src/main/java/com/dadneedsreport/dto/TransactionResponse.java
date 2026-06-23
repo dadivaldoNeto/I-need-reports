@@ -6,7 +6,7 @@ import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.models.Transaction;
 
 
-public record TransactionResponse(Long id, TransactionType type, String title, String money, String description,
+public record TransactionResponse(Long id, TransactionType type, String title, String amount, String description,
 		LocalDate createdAt) {
 	public TransactionResponse(Transaction entity) {
 		this(
