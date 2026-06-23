@@ -2,6 +2,9 @@ package com.dadneedsreport.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.dadneedsreport.config.HandleException;
+import com.dadneedsreport.dto.StringResponse;
 import com.dadneedsreport.dto.TransactionRequest;
 import com.dadneedsreport.dto.TransactionResponse;
 import com.dadneedsreport.services.TransactionService;
@@ -15,48 +18,73 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/transactions")
 public class TransactionController {
 
-	final TransactionService transactionService;
+	private final TransactionService transactionService;
 
 	TransactionController(TransactionService transactionService) {
 		this.transactionService = transactionService;
 	}
 
-	@PostMapping("transactions")
-	public ResponseEntity<String> transactions(@Valid @RequestBody TransactionRequest entity) {
+	/*
+	 * -> Default routes
+	 */
+	@PostMapping()
+	public ResponseEntity<?> transactions(@Valid @RequestBody TransactionRequest entity) {
 		try {
 			transactionService.saveTransaction(entity);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (RuntimeException ex) {
+			return HandleException.error(HttpStatus.BAD_REQUEST, ex);
 		}
 	}
 
-
-	@PutMapping("transactions/{id}")
-	public ResponseEntity<String> transactionsById(@PathVariable Long id, @Valid @RequestBody TransactionRequest entity) {
-		try {
-			transactionService.saveTransaction(entity);
-			return ResponseEntity.status(HttpStatus.CREATED).body(null);
-		} catch (EntityNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-	}
-
-	@GetMapping("transactions/auditoria")
-	public List<TransactionResponse> getTransactionsAuditoria() {
-		return transactionService.getTransactionsAuditoria();
-	}
-	
-	@GetMapping("transactions")
+	@GetMapping()
 	public List<TransactionResponse> getTransactions() {
 		return transactionService.getTransactions();
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<?> transactionsById(@PathVariable Long id, @Valid @RequestBody TransactionRequest entity) {
+		try {
+			transactionService.updateTransactionById(id, entity);
+			return ResponseEntity.status(HttpStatus.CREATED).body(null);
+		} catch (EntityNotFoundException ex) {
+			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+		}
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getTransactionById(@PathVariable Long id) {
+		try {
+			return ResponseEntity.ok(transactionService.getTransactionById(id));
+		} catch (EntityNotFoundException ex) {
+			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteTransactionById(@PathVariable Long id) {
+		try {
+			transactionService.deleteTransactionById(id);
+			return ResponseEntity.noContent().build();
+		} catch (EntityNotFoundException ex) {
+			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+		}
+	}
+
+	/*
+	 * Get every transaction
+	 */
+	@GetMapping("/auditoria")
+	public List<TransactionResponse> getTransactionsAuditoria() {
+		return transactionService.getTransactionsAuditoria();
 	}
 
 }

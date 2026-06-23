@@ -1,9 +1,7 @@
 package com.dadneedsreport.models;
 
 import java.time.LocalDate;
-
 import javax.money.MonetaryAmount;
-
 import org.javamoney.moneta.Money;
 
 import com.dadneedsreport.dto.TransactionRequest;
@@ -17,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 

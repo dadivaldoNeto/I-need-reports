@@ -2,7 +2,6 @@ package com.dadneedsreport.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import com.dadneedsreport.dto.TransactionRequest;
@@ -25,6 +24,7 @@ public class TransactionService {
 		this.auditoria = transactionHistoryRepository;
 	}
 
+	// AUDITORIA ENDPOINT
 	public List<TransactionResponse> getTransactionsAuditoria() {
 		List<TransactionHistory> transacts = auditoria.findAll();
 		List<TransactionResponse> response = new ArrayList<>();
@@ -39,6 +39,7 @@ public class TransactionService {
 		return (response);
 	}
 
+	// SAVE TRANSACTION ENDPOINT
 	public void saveTransaction(TransactionRequest entity) {
 		Transaction transaction = new Transaction();
 		transaction.prepareToPersist(entity);
@@ -46,6 +47,7 @@ public class TransactionService {
 		auditoria.save(TransactionHistory.from(transaction));
 	}
 
+	// UPDATE TRANSACTION BY ID ENDPOINT
 	public void updateTransactionById(Long id, TransactionRequest entity) {
 		Transaction transact = incomeEntity.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -54,6 +56,20 @@ public class TransactionService {
 		auditoria.save(TransactionHistory.from(transact));
 	}
 
+	// GET TRANSACTION BY ID ENDPOINT
+	public TransactionResponse getTransactionById(Long id) {
+		Transaction transact = incomeEntity.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+		return new TransactionResponse(transact);
+	}
+
+	// DELETE TRANSACTION BY ID ENDPOINT
+	public void deleteTransactionById(Long id) {
+		if (incomeEntity.deleteByID(id) <= 0)
+			throw new EntityNotFoundException("User not found");
+	}
+
+	// GET ALL TRANSACTION
 	public List<TransactionResponse> getTransactions() {
 		List<Transaction> transacts = incomeEntity.findAll();
 		List<TransactionResponse> response = new ArrayList<>();

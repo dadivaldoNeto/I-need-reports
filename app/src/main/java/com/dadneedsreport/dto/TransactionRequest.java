@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 /*
 {
   "type": "INCOME",
+   "title" : "hello, world",
   "amount": 250000,
   "description": "Monthly salary",
   "date": "2026-06-22"

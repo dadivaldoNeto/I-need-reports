@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dadneedsreport.models.TransactionHistory;
 
-public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long>  {}
+public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long>  {
+	Long deleteByID(Long id);
+}
