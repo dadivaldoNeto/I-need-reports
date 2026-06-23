@@ -1,12 +1,13 @@
 package com.dadneedsreport.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dadneedsreport.config.HandleException;
-import com.dadneedsreport.dto.StringResponse;
 import com.dadneedsreport.dto.TransactionRequest;
 import com.dadneedsreport.dto.TransactionResponse;
+import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.services.TransactionService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -69,6 +70,15 @@ public class TransactionController {
 		}
 	}
 
+	@GetMapping("/filter")
+	public ResponseEntity<?> getTransactionsByType(@RequestParam(name = "type") TransactionType type) {
+		try {
+			return ResponseEntity.ok(transactionService.getTransactionByType(type));
+		} catch (EntityNotFoundException ex) {
+			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+		}
+	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteTransactionById(@PathVariable Long id) {
 		try {
@@ -77,14 +87,6 @@ public class TransactionController {
 		} catch (EntityNotFoundException ex) {
 			return HandleException.error(HttpStatus.NOT_FOUND, ex);
 		}
-	}
-
-	/*
-	 * Get every transaction
-	 */
-	@GetMapping("/auditoria")
-	public List<TransactionResponse> getTransactionsAuditoria() {
-		return transactionService.getTransactionsAuditoria();
 	}
 
 }
