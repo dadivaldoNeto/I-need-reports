@@ -6,10 +6,11 @@ import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.models.BaseTransact;
 
 
-public record TransactionResponse(TransactionType type, String title, String money, String description,
+public record TransactionResponse(Long id, TransactionType type, String title, String money, String description,
 		LocalDate createdAt) {
 	public TransactionResponse(BaseTransact entity) {
 		this(
+				entity.getId(),
 				entity.getType(),
 				entity.getTitle(),
 				entity.getAmount().toString(),
