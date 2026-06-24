@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Relatório Financeiro - Dad Needs Report</title>
+
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 18mm 14mm 18mm 14mm;
+
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                color: #6b7280;
+            }
+
+            @bottom-left {
+                content: "Dad Needs Report — Sistema de Finanças Pessoais";
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                color: #6b7280;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #111827;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            line-height: 1.45;
+        }
+
+        .page {
+            width: 100%;
+        }
+
+        /* Header */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .header-left {
+            vertical-align: bottom;
+        }
+
+        .header-right {
+            text-align: right;
+            vertical-align: bottom;
+        }
+
+        .system-label {
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+
+        .brand {
+            font-size: 22pt;
+            font-weight: bold;
+            letter-spacing: -0.6px;
+            color: #111827;
+        }
+
+        .report-title {
+            font-size: 11pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #374151;
+        }
+
+        .generated-at {
+            margin-top: 5px;
+            font-size: 9pt;
+            color: #6b7280;
+        }
+
+        .divider {
+            border-top: 1px solid #d1d5db;
+            margin-bottom: 24px;
+            height: 0;
+        }
+
+        /* Generic cards */
+        .card {
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            border-radius: 6px;
+        }
+
+        .card-muted {
+            background-color: #f9fafb;
+        }
+
+        /* Metadata */
+        .meta-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 26px;
+            border: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .meta-table td {
+            width: 50%;
+            padding: 14px 16px;
+            vertical-align: top;
+        }
+
+        .meta-table td + td {
+            border-left: 1px solid #e5e7eb;
+        }
+
+        .meta-label {
+            font-size: 8pt;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* KPI cards */
+        .kpi-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 32px;
+        }
+
+        .kpi-cell {
+            width: 33.333%;
+            padding-right: 10px;
+            vertical-align: top;
+        }
+
+        .kpi-cell-last {
+            padding-right: 0;
+        }
+
+        .kpi-card {
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 78px;
+        }
+
+        .kpi-card-highlight {
+            border-color: #d1d5db;
+            background-color: #111827;
+            color: #ffffff;
+        }
+
+        .kpi-title {
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .kpi-card-highlight .kpi-title {
+            color: #d1d5db;
+        }
+
+        .kpi-value {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #111827;
+            letter-spacing: -0.4px;
+        }
+
+        .kpi-card-highlight .kpi-value {
+            color: #ffffff;
+        }
+
+        /* Section */
+        .section-header {
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .section-description {
+            font-size: 9pt;
+            color: #6b7280;
+        }
+
+        /* Transaction table */
+        .table-wrapper {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .data-table thead {
+            display: table-header-group;
+        }
+
+        .data-table th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 9pt;
+            vertical-align: middle;
+            color: #374151;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        .title-cell {
+            color: #111827;
+            font-weight: bold;
+        }
+
+        .amount-cell {
+            color: #111827;
+            font-weight: bold;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            border: 1px solid #d1d5db;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #374151;
+            background-color: #ffffff;
+        }
+
+        .badge-expense {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .empty-message {
+            padding: 24px 12px !important;
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        /* Responsividade para preview em browser.
+           O PDF continua fixo em A4. */
+        @media screen and (max-width: 720px) {
+            .header-table,
+            .header-table tbody,
+            .header-table tr,
+            .header-table td,
+            .meta-table,
+            .meta-table tbody,
+            .meta-table tr,
+            .meta-table td,
+            .kpi-table,
+            .kpi-table tbody,
+            .kpi-table tr,
+            .kpi-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .header-right {
+                text-align: left;
+                margin-top: 14px;
+            }
+
+            .meta-table td + td {
+                border-left: none;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .kpi-cell {
+                padding-right: 0;
+                padding-bottom: 10px;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            .data-table {
+                min-width: 720px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+        <!-- Cabeçalho -->
+        <table class="header-table">
+            <tr>
+                <td class="header-left">
+                    <div class="system-label">Sistema de Finanças Pessoais</div>
+                    <div class="brand">Dad Needs Report</div>
+                </td>
+
+                <td class="header-right">
+                    <div class="report-title">Relatório Financeiro</div>
+                    <div class="generated-at" th:text="${generatedAt}">
+                        24-06-2026 18:20
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <!-- Metadados -->
+        <table class="meta-table avoid-break">
+            <tr>
+                <td>
+                    <div class="meta-label">Período do Relatório</div>
+                    <div
+                        class="meta-value"
+                        th:text="${startDate != null and endDate != null} ? (${startDate} + ' até ' + ${endDate}) : 'Todo o Histórico'"
+                    >
+                        01-06-2026 até 30-06-2026
+                    </div>
+                </td>
+
+                <td>
+                    <div class="meta-label">Data de Geração</div>
+                    <div class="meta-value" th:text="${generatedAt}">
+                        24-06-2026 18:20
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- KPIs -->
+        <table class="kpi-table avoid-break">
+            <tr>
+                <td class="kpi-cell">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Entradas</div>
+                        <div class="kpi-value" th:text="${totalIncome}">
+                            250.000,00 KZ
+                        </div>
+                    </div>
+                </td>
+
+                <td class="kpi-cell">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Gastos</div>
+                        <div class="kpi-value" th:text="${totalExpenses}">
+                            75.000,00 KZ
+                        </div>
+                    </div>
+                </td>
+
+                <td class="kpi-cell kpi-cell-last">
+                    <div class="kpi-card kpi-card-highlight">
+                        <div class="kpi-title">Saldo Final</div>
+                        <div class="kpi-value" th:text="${currentBalance}">
+                            175.000,00 KZ
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Transações -->
+        <div class="section-header">
+            <div class="section-title">Histórico de Transações</div>
+            <div class="section-description">
+                Lista detalhada das movimentações financeiras do período selecionado.
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">Data</th>
+                        <th style="width: 13%;">Tipo</th>
+                        <th style="width: 24%;">Título</th>
+                        <th>Descrição</th>
+                        <th style="width: 20%;" class="text-right">Valor</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="tx : ${transactions}">
+                        <td class="nowrap" th:text="${tx.createdAt != null} ? ${tx.createdAt} : '---'">
+                            22-06-2026
+                        </td>
+
+                        <td class="nowrap">
+                            <span
+                                class="badge"
+                                th:classappend="${tx.type.name() == 'INCOME'} ? '' : ' badge-expense'"
+                                th:text="${tx.type.name() == 'INCOME'} ? 'Entrada' : 'Gasto'"
+                            >
+                                Entrada
+                            </span>
+                        </td>
+
+                        <td class="title-cell" th:text="${tx.title}">
+                            Salário Mensal
+                        </td>
+
+                        <td th:text="${tx.description != null and !#strings.isEmpty(tx.description)} ? ${tx.description} : 'Sem descrição'">
+                            Pagamento referente ao mês corrente
+                        </td>
+
+                        <td class="text-right nowrap amount-cell" th:text="${tx.amount}">
+                            250.000,00 KZ
+                        </td>
+                    </tr>
+
+                    <!-- Exemplos apenas para preview visual; removidos pelo Thymeleaf -->
+                    <tr th:remove="all">
+                        <td class="nowrap">22-06-2026</td>
+                        <td class="nowrap"><span class="badge">Entrada</span></td>
+                        <td class="title-cell">Salário Mensal</td>
+                        <td>Transferência da empresa</td>
+                        <td class="text-right nowrap amount-cell">250.000,00 KZ</td>
+                    </tr>
+
+                    <tr th:remove="all">
+                        <td class="nowrap">22-06-2026</td>
+                        <td class="nowrap"><span class="badge badge-expense">Gasto</span></td>
+                        <td class="title-cell">Almoço Executivo</td>
+                        <td>Restaurante Central</td>
+                        <td class="text-right nowrap amount-cell">15.000,00 KZ</td>
+                    </tr>
+
+                    <tr th:remove="all">
+                        <td class="nowrap">23-06-2026</td>
+                        <td class="nowrap"><span class="badge badge-expense">Gasto</span></td>
+                        <td class="title-cell">Serviço de Táxi</td>
+                        <td>Deslocação para o escritório</td>
+                        <td class="text-right nowrap amount-cell">5.000,00 KZ</td>
+                    </tr>
+
+                    <!-- Fallback real -->
+                    <tr th:if="${transactions == null or #lists.isEmpty(transactions)}">
+                        <td colspan="5" class="empty-message">
+                            Nenhuma transação encontrada para o período selecionado.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

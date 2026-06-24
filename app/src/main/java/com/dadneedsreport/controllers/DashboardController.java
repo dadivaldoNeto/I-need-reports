@@ -6,21 +6,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dadneedsreport.dto.DashboardResponse;
 import com.dadneedsreport.services.DashboardService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("api/dashboard")
+@RequestMapping("api/v1/dashboard")
 public class DashboardController {
 	
-	@Autowired
-	DashboardService dashboardService;
+	final DashboardService dashboardService;
+
+	DashboardController(DashboardService dashboardService) {
+		this.dashboardService = dashboardService;
+	}
 
 	@GetMapping()
 	public ResponseEntity<DashboardResponse> dashboard() {
 		return ResponseEntity.ok(dashboardService.getDatas());
 	}
 	
+
 }

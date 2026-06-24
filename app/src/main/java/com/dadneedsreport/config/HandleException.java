@@ -14,25 +14,25 @@ public class HandleException {
 
 	// It can be improved
 	private static final String otherError = """
-				{
-					error : SERVICE TEMPORARY UNVALIABLE
-				}
+			{
+				error : SERVICE TEMPORARY UNVALIABLE
+			}
 			""";
 
 	private static final String badRequest = """
-				{
-					error : SEE THE DOCUMENTATION
-				}
+			{
+				error : SEE THE DOCUMENTATION
+			}
 			""";
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	ResponseEntity<String> invalidJson(HttpMessageNotReadableException e) {
-		return new ResponseEntity(badRequest, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(badRequest, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
 	ResponseEntity<String> invalidRequest(HttpMediaTypeNotSupportedException e) {
-		return new ResponseEntity(badRequest, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(badRequest, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
@@ -42,6 +42,8 @@ public class HandleException {
 	}
 
 	public static ResponseEntity<StringResponse> error(HttpStatus status, Exception ex) {
+		if (status == null)
+				status = HttpStatus.BAD_REQUEST;
 		return ResponseEntity.status(status).body(new StringResponse(ex.getMessage()));
 	}
 }

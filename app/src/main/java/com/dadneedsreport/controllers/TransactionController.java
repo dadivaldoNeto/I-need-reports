@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dadneedsreport.config.HandleException;
 import com.dadneedsreport.dto.TransactionRequest;
-import com.dadneedsreport.dto.TransactionResponse;
 import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.services.TransactionService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("api/transactions")
+@RequestMapping("api/v1/transactions")
 public class TransactionController {
 
 	private final TransactionService transactionService;
@@ -47,8 +45,10 @@ public class TransactionController {
 	}
 
 	@GetMapping()
-	public List<TransactionResponse> getTransactions() {
-		return transactionService.getTransactions();
+	public ResponseEntity<?> getTransactions(@RequestParam(required = false, name = "type") TransactionType type) {
+		if (type == null)
+			return ResponseEntity.ok(transactionService.getTransactions());
+		return getTransactionsByType(type);
 	}
 
 	@PutMapping("/{id}")
@@ -70,20 +70,20 @@ public class TransactionController {
 		}
 	}
 
-	@GetMapping("/filter")
-	public ResponseEntity<?> getTransactionsByType(@RequestParam(name = "type") TransactionType type) {
-		try {
-			return ResponseEntity.ok(transactionService.getTransactionByType(type));
-		} catch (EntityNotFoundException ex) {
-			return HandleException.error(HttpStatus.NOT_FOUND, ex);
-		}
-	}
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteTransactionById(@PathVariable Long id) {
 		try {
 			transactionService.deleteTransactionById(id);
 			return ResponseEntity.noContent().build();
+		} catch (EntityNotFoundException ex) {
+			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+		}
+	}
+
+
+	private ResponseEntity<?> getTransactionsByType(TransactionType type) {
+		try {
+			return ResponseEntity.ok(transactionService.getTransactionByType(type));
 		} catch (EntityNotFoundException ex) {
 			return HandleException.error(HttpStatus.NOT_FOUND, ex);
 		}
