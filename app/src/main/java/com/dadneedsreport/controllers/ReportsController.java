@@ -21,7 +21,7 @@ public class ReportsController {
 		this.reportService = reportService;
 	}
 
-	@GetMapping("/pdf")
+	@GetMapping(value = "/pdf")
 	public ResponseEntity<?> genPdfReport() {
 		try {
 

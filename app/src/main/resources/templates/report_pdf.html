@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Relatório Financeiro - Dad Needs Report</title>
+
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 16mm 13mm 17mm 13mm;
+
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                color: #94a3b8;
+            }
+
+            @bottom-left {
+                content: "Dad Needs Report";
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                color: #94a3b8;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #0f172a;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9.5pt;
+            line-height: 1.42;
+        }
+
+        .page {
+            width: 100%;
+        }
+
+        .top-strip {
+            height: 5px;
+            background-color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .header-left {
+            width: 62%;
+            vertical-align: top;
+        }
+
+        .header-right {
+            width: 38%;
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .system-label {
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .brand {
+            font-size: 21pt;
+            line-height: 1;
+            font-weight: bold;
+            letter-spacing: -0.7px;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .header-subtitle {
+            font-size: 9pt;
+            color: #64748b;
+        }
+
+        .report-title-box {
+            display: inline-block;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            padding: 10px 12px;
+            min-width: 178px;
+            text-align: left;
+        }
+
+        .report-title {
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .generated-at {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-table td {
+            width: 50%;
+            padding: 12px 14px;
+            background-color: #f8fafc;
+            vertical-align: top;
+        }
+
+        .meta-table td + td {
+            border-left: 1px solid #e2e8f0;
+        }
+
+        .meta-label {
+            font-size: 7.5pt;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .kpi-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 24px;
+        }
+
+        .kpi-cell {
+            width: 33.333%;
+            padding-right: 9px;
+            vertical-align: top;
+        }
+
+        .kpi-cell-last {
+            padding-right: 0;
+        }
+
+        .kpi-card {
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            padding: 13px 14px;
+            min-height: 76px;
+        }
+
+        .kpi-income {
+            border-top: 4px solid #059669;
+        }
+
+        .kpi-expense {
+            border-top: 4px solid #dc2626;
+        }
+
+        .kpi-balance {
+            border-top: 4px solid #0f172a;
+            background-color: #0f172a;
+        }
+
+        .kpi-title {
+            font-size: 7.6pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .kpi-balance .kpi-title {
+            color: #cbd5e1;
+        }
+
+        .kpi-value {
+            font-size: 15pt;
+            font-weight: bold;
+            letter-spacing: -0.4px;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .kpi-income .kpi-value {
+            color: #047857;
+        }
+
+        .kpi-expense .kpi-value {
+            color: #b91c1c;
+        }
+
+        .kpi-balance .kpi-value {
+            color: #ffffff;
+        }
+
+        .section-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 0;
+        }
+
+        .section-description {
+            font-size: 8.8pt;
+            color: #64748b;
+            padding-top: 2px;
+        }
+
+        .transaction-count {
+            text-align: right;
+            font-size: 8pt;
+            color: #64748b;
+            vertical-align: bottom;
+            white-space: nowrap;
+        }
+
+        .table-wrapper {
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .data-table thead {
+            display: table-header-group;
+        }
+
+        .data-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 7.4pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            text-align: left;
+            padding: 9px 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 8.7pt;
+            vertical-align: middle;
+            color: #334155;
+        }
+
+        .data-table tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .date-cell {
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .title-cell {
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .description-cell {
+            color: #475569;
+        }
+
+        .amount-cell {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .amount-income {
+            color: #047857;
+        }
+
+        .amount-expense {
+            color: #b91c1c;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        /*
+         * Tipo de transação:
+         * evita o formato de "círculo/pílula" e usa um marcador retangular simples,
+         * mais limpo para PDF.
+         */
+        .type-label {
+            display: inline-block;
+            min-width: 62px;
+            padding: 3px 6px;
+            border-left-width: 4px;
+            border-left-style: solid;
+            font-size: 7pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+            line-height: 1.25;
+            background-color: #f8fafc;
+        }
+
+        .type-income {
+            border-left-color: #059669;
+            color: #047857;
+            background-color: #ecfdf5;
+        }
+
+        .type-expense {
+            border-left-color: #dc2626;
+            color: #b91c1c;
+            background-color: #fef2f2;
+        }
+
+        .empty-message {
+            padding: 24px 12px !important;
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .footer-note {
+            margin-top: 12px;
+            font-size: 8pt;
+            color: #94a3b8;
+            text-align: right;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="top-strip"></div>
+
+        <table class="header-table">
+            <tr>
+                <td class="header-left">
+                    <div class="system-label">Sistema de Finanças Pessoais</div>
+                    <div class="brand">Dad Needs Report</div>
+                    <div class="header-subtitle">Resumo consolidado das suas movimentações financeiras.</div>
+                </td>
+
+                <td class="header-right">
+                    <div class="report-title-box">
+                        <div class="report-title">Relatório Financeiro</div>
+                        <div class="generated-at" th:text="${generatedAt}">
+                            24-06-2026 18:20
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="meta-table avoid-break">
+            <tr>
+                <td>
+                    <div class="meta-label">Período do Relatório</div>
+                    <div
+                        class="meta-value"
+                        th:text="${startDate != null and endDate != null ? startDate + ' até ' + endDate : 'Todo o Histórico'}"
+                    >
+                        Todo o Histórico
+                    </div>
+                </td>
+
+                <td>
+                    <div class="meta-label">Data de Geração</div>
+                    <div class="meta-value" th:text="${generatedAt}">
+                        24-06-2026 18:20
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="kpi-table avoid-break">
+            <tr>
+                <td class="kpi-cell">
+                    <div class="kpi-card kpi-income">
+                        <div class="kpi-title">Total Entradas</div>
+                        <div class="kpi-value" th:text="${money.format(totalIncome)}">
+                            AOA 0,00
+                        </div>
+                    </div>
+                </td>
+
+                <td class="kpi-cell">
+                    <div class="kpi-card kpi-expense">
+                        <div class="kpi-title">Total Gastos</div>
+                        <div class="kpi-value" th:text="${money.format(totalExpenses)}">
+                            AOA 0,00
+                        </div>
+                    </div>
+                </td>
+
+                <td class="kpi-cell kpi-cell-last">
+                    <div class="kpi-card kpi-balance">
+                        <div class="kpi-title">Saldo Final</div>
+                        <div class="kpi-value" th:text="${money.format(currentBalance)}">
+                            AOA 0,00
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="section-table">
+            <tr>
+                <td>
+                    <div class="section-title">Histórico de Transações</div>
+                    <div class="section-description">
+                        Lista detalhada das movimentações financeiras do período selecionado.
+                    </div>
+                </td>
+                <td class="transaction-count" th:text="${transactions != null ? #lists.size(transactions) + ' transações' : '0 transações'}">
+                    0 transações
+                </td>
+            </tr>
+        </table>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 13%;">Data</th>
+                        <th style="width: 13%;">Tipo</th>
+                        <th style="width: 23%;">Título</th>
+                        <th>Descrição</th>
+                        <th style="width: 19%;" class="text-right">Valor</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:if="${transactions == null or #lists.isEmpty(transactions)}">
+                        <td colspan="5" class="empty-message">
+                            Nenhuma transação encontrada para o período selecionado.
+                        </td>
+                    </tr>
+
+                    <tr th:each="tx : ${transactions}">
+                        <td class="date-cell" th:text="${tx.createdAt() != null ? #temporals.format(tx.createdAt(), 'dd-MM-yyyy') : '---'}">
+                            --
+                        </td>
+
+                        <td class="nowrap">
+                            <span
+                                class="type-label"
+                                th:classappend="${tx.type() != null and tx.type().name() == 'INCOME' ? ' type-income' : ' type-expense'}"
+                                th:text="${tx.type() != null and tx.type().name() == 'INCOME' ? 'Entrada' : 'Gasto'}"
+                            >
+                                Entrada
+                            </span>
+                        </td>
+
+                        <td class="title-cell" th:text="${tx.title() != null and !#strings.isEmpty(tx.title()) ? tx.title() : 'Sem título'}">
+                            Sem título
+                        </td>
+
+                        <td class="description-cell" th:text="${tx.description() != null and !#strings.isEmpty(tx.description()) ? tx.description() : 'Sem descrição'}">
+                            Sem descrição
+                        </td>
+
+                        <td
+                            class="text-right amount-cell"
+                            th:classappend="${tx.type() != null and tx.type().name() == 'INCOME' ? ' amount-income' : ' amount-expense'}"
+                            th:text="${money.format(tx.amount())}"
+                        >
+                            AOA 0,00
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer-note">
+            Valores expressos em AOA.
+        </div>
+    </div>
+</body>
+</html>
