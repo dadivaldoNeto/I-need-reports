@@ -40,7 +40,7 @@ public class TransactionController {
 			transactionService.saveTransaction(entity);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
 		} catch (RuntimeException ex) {
-			return HandleException.error(HttpStatus.BAD_REQUEST, ex);
+			return HandleException.error(HttpStatus.BAD_REQUEST, ex.getMessage());
 		}
 	}
 
@@ -57,7 +57,7 @@ public class TransactionController {
 			transactionService.updateTransactionById(id, entity);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
 		} catch (EntityNotFoundException ex) {
-			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+			return HandleException.error(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 
@@ -66,7 +66,7 @@ public class TransactionController {
 		try {
 			return ResponseEntity.ok(transactionService.getTransactionById(id));
 		} catch (EntityNotFoundException ex) {
-			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+			return HandleException.error(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 
@@ -76,7 +76,7 @@ public class TransactionController {
 			transactionService.deleteTransactionById(id);
 			return ResponseEntity.noContent().build();
 		} catch (EntityNotFoundException ex) {
-			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+			return HandleException.error(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 
@@ -85,7 +85,7 @@ public class TransactionController {
 		try {
 			return ResponseEntity.ok(transactionService.getTransactionByType(type));
 		} catch (EntityNotFoundException ex) {
-			return HandleException.error(HttpStatus.NOT_FOUND, ex);
+			return HandleException.error(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 
