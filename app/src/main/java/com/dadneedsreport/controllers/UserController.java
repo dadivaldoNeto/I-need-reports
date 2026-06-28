@@ -2,6 +2,7 @@ package com.dadneedsreport.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +29,23 @@ public class UserController {
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest dto) {
 		try {
 			userService.registerUser(dto);
-			return ResponseEntity.ok(null);
+			return ResponseEntity.status(HttpStatus.CREATED).body(null);
 		}
 		catch(Exception ex) {
 			return HandleException.error(HttpStatus.BAD_REQUEST, "User already exists");	
 		}
 	}
+
+	@PostMapping(value = "login")
+	public ResponseEntity<?> loginUser(@Valid @RequestBody UserRequest dto) {
+		try {
+			userService.loginUser(dto);
+			return ResponseEntity.ok("I will send a token");
+		}
+		catch(RuntimeException ex) {
+			return HandleException.error(HttpStatus.BAD_REQUEST, ex.getMessage());	
+		}
+	}
+
+
 }

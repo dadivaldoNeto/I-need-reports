@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Getter;
 
 @Entity
 @NoArgsConstructor
@@ -23,6 +24,7 @@ public class User {
 	private String username;
 
 	@NotBlank
+	@Getter
 	@Setter
 	private String password;
 }
