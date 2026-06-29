@@ -11,6 +11,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.dadneedsreport.dto.StringResponse;
 
@@ -18,33 +19,32 @@ import com.dadneedsreport.dto.StringResponse;
 public class HandleException {
 
 	// It can be improved
-	private static final String otherError = """
-			{
-				error : SERVICE TEMPORARY UNVALIABLE
-			}
-			""";
+	private static final String otherError = "SERVICE TEMPORARY UNVALIABLE";
 
-	private static final String badRequest = """
-			{
-				error : SEE THE DOCUMENTATION
-			}
-			""";
+	private static final String invalidMedia = "Invalid Media Type";	
+	private static final String invaliArg = "Invalid Request";
+	private static final String badRequest = "EndPoint NotFound, Please see the documentation";
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	ResponseEntity<String> invalidJson(HttpMessageNotReadableException e) {
-		return new ResponseEntity<String>(badRequest, HttpStatus.BAD_REQUEST);
+	ResponseEntity<?> invalidJson(HttpMessageNotReadableException e) {
+		return error(HttpStatus.BAD_REQUEST, invalidMedia);
 	}
 
 	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-	ResponseEntity<String> invalidRequest(HttpMediaTypeNotSupportedException e) {
-		return new ResponseEntity<String>(badRequest, HttpStatus.BAD_REQUEST);
+	ResponseEntity<?> invalidRequest(HttpMediaTypeNotSupportedException e) {
+		return error(HttpStatus.BAD_REQUEST, invaliArg);
 	}
 
+	//End point not found
+	@ExceptionHandler(NoResourceFoundException.class)
+	public static ResponseEntity<StringResponse> resourceNotFound() {
+		return error(HttpStatus.BAD_REQUEST, badRequest);
+	}
+
+	//
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	ResponseEntity<?> argumentErros(MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
-		
-		
 		ex.getBindingResult().getFieldErrors().forEach( 
 			(e) -> errors.put(e.getField(), e.getDefaultMessage())
 		);
@@ -52,9 +52,9 @@ public class HandleException {
 	}
 
 	@ExceptionHandler(Exception.class)
-	ResponseEntity<String> anyOtherError(Exception ex) {
+	ResponseEntity<?> anyOtherError(Exception ex) {
 		System.out.println(ex.toString());
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(otherError);
+		return error(HttpStatus.INTERNAL_SERVER_ERROR, otherError);
 	}
 
 	public static ResponseEntity<StringResponse> error(HttpStatus status, String message) {

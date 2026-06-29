@@ -9,14 +9,17 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.dadneedsreport.models.User;
-
 
 @Service
 public class JwtService {
@@ -24,7 +27,7 @@ public class JwtService {
 	@Value("${jwt.secret}")
 	private String SECRET;
 
-	@Value("${jwt.expiration}")
+	@Value("${jwt.expiration.Hour}")
 	private long expirationH;
 
 	public String generateToken(User user) {
@@ -63,15 +66,16 @@ public class JwtService {
 					.parseSignedClaims(token)
 					.getPayload();
 
-			if (isTokenExpired(claims.getExpiration()))
-				throw new RuntimeException("JWT Token expired");
 			return (claims);
-		} catch (JwtException ex) {
-			throw new RuntimeException("Invalid JWT Token");
-		}
-	}
+		} catch (ExpiredJwtException ex) {
+			throw new RuntimeException("Token expirado");
 
-	private boolean isTokenExpired(Date expDate) {
-		return Instant.now().isAfter(expDate.toInstant());
+		} catch (MalformedJwtException ex) {
+			throw new RuntimeException("Token malformado");
+		} catch (SignatureException ex) {
+			throw new RuntimeException("Assinatura do token inválida");
+		} catch (JwtException ex) {
+			throw new RuntimeException("Token inválido");
+		}
 	}
 }
