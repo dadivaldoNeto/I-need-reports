@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.Getter;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class User {
 
@@ -24,7 +25,6 @@ public class User {
 	private String username;
 
 	@NotBlank
-	@Getter
 	@Setter
 	private String password;
 }

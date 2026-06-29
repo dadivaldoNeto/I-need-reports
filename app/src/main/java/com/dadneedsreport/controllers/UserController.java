@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dadneedsreport.config.HandleException;
+import com.dadneedsreport.dto.StringResponse;
 import com.dadneedsreport.dto.UserRequest;
 import com.dadneedsreport.services.UserService;
 
@@ -24,28 +25,23 @@ public class UserController {
 		this.userService = userService;
 	}
 
-
 	@PostMapping(value = "register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest dto) {
 		try {
 			userService.registerUser(dto);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
-		}
-		catch(Exception ex) {
-			return HandleException.error(HttpStatus.BAD_REQUEST, "User already exists");	
+		} catch (Exception ex) {
+			return HandleException.error(HttpStatus.BAD_REQUEST, "User already exists");
 		}
 	}
 
 	@PostMapping(value = "login")
 	public ResponseEntity<?> loginUser(@Valid @RequestBody UserRequest dto) {
 		try {
-			userService.loginUser(dto);
-			return ResponseEntity.ok("I will send a token");
-		}
-		catch(RuntimeException ex) {
-			return HandleException.error(HttpStatus.BAD_REQUEST, ex.getMessage());	
+			return ResponseEntity.ok(userService.loginUser(dto));
+		} catch (RuntimeException ex) {
+			return HandleException.error(HttpStatus.BAD_REQUEST, ex.getMessage());
 		}
 	}
-
 
 }
