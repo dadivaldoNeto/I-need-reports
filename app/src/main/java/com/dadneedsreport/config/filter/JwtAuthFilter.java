@@ -1,4 +1,4 @@
-package com.dadneedsreport.filter;
+package com.dadneedsreport.config.filter;
 
 import java.io.IOException;
 import java.util.HashMap;

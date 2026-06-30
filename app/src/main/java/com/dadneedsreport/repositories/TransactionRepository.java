@@ -9,10 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import com.dadneedsreport.enums.TransactionType;
 
-
-public interface TransactionRepository extends JpaRepository<Transaction, Long>  {
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 	@Modifying
 	@Transactional
-	Long deleteByID(Long id);
-	Optional<List<Transaction>> findByType(TransactionType type);
+	Long deleteByID(Long id, Long userId);
+
+	Optional<List<Transaction>> findByTypeAndUserId(TransactionType type, Long userId);
+
+	List<Transaction> findAllByUserId(Long userId);
+
+	Optional<Transaction> findByIdAndUserId(Long id, Long userId);
 }

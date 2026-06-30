@@ -15,7 +15,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.ForeignKey;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,8 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "Users_transactions")
-@NamedQuery(name = "Transaction.deleteByID",
-  query = "DELETE FROM Users_transactions t where t.id = ?1")
+@NamedQuery(name = "Transaction.deleteByID", query = "DELETE FROM Users_transactions t where t.id = ?1 AND t.user = ?2")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -35,6 +37,10 @@ public class Transaction {
 
 	@NotBlank
 	private String title;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"))
+	private User user;
 
 	@NotNull
 	@Convert(converter = MoneyAmountConverter.class)
@@ -49,7 +55,7 @@ public class Transaction {
 	@NotNull
 	private TransactionType type;
 
-	public void prepareToPersist(TransactionRequest entity) {
+	public void prepareToPersist(TransactionRequest entity, User user) {
 		title = entity.title();
 		amount = Money.of(entity.amount(), "AOA");
 		if (amount.isNegativeOrZero())
@@ -57,5 +63,6 @@ public class Transaction {
 		description = entity.description();
 		createdAt = entity.date();
 		type = entity.type();
+		this.user = user;
 	}
 }

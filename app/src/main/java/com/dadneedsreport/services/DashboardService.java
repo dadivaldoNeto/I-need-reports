@@ -30,6 +30,7 @@ public class DashboardService {
 		Long nIncomes = 0L;
 		Long nExpenses = 0L;
 
+		System.out.println(JwtService.getUserId());
 		for (Transaction t : transact) {
 			if (t.getType() == TransactionType.INCOME) {
 				amountIncomes = amountIncomes.add(t.getAmount());

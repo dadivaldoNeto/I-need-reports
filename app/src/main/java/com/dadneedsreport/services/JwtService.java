@@ -17,6 +17,8 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.dadneedsreport.models.User;
@@ -77,5 +79,17 @@ public class JwtService {
 		} catch (JwtException ex) {
 			throw new RuntimeException("Token inválido");
 		}
+	}
+	public static Number getUserId() {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		Map<String, Object> user = (Map<String, Object>) auth.getPrincipal();
+
+		return (Number)user.get("id");
+	}
+
+	public static String getUsername() {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		Map<String, Object> user = (Map<String, Object>) auth.getPrincipal();
+		return (String) user.get("username");
 	}
 }

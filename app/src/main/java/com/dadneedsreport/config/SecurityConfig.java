@@ -1,7 +1,5 @@
 package com.dadneedsreport.config;
 
-import java.io.IOException;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.dadneedsreport.filter.JwtAuthFilter;
+import com.dadneedsreport.config.filter.JwtAuthFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -45,6 +43,8 @@ public class SecurityConfig {
 									}
 									""");
 						}))
+				.formLogin(form -> form.disable())
+				.httpBasic(basic -> basic.disable())
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
