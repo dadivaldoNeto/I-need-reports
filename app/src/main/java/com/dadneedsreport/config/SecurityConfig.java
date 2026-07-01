@@ -31,6 +31,13 @@ public class SecurityConfig {
 				.authorizeHttpRequests(
 						(authorize) -> authorize.requestMatchers(HttpMethod.POST, "/api/v1/register", "/api/v1/login")
 								.permitAll()
+								.requestMatchers(
+								"/swagger/**",
+								"/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                "/swagger-resources/**").permitAll()
 								.anyRequest().authenticated())
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.exceptionHandling(ex -> ex
