@@ -125,7 +125,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- OPEN API  DOCUMENTATION -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -133,6 +133,12 @@
 			<version>2.8.17</version>
 		</dependency>
 
+		<!-- SPRING TEST-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

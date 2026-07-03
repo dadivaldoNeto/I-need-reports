@@ -35,7 +35,7 @@ public class TransactionController {
 	 * -> Default routes
 	 */
 	@PostMapping()
-	public ResponseEntity<?> transactions(@Valid @RequestBody TransactionRequest entity) {
+	public ResponseEntity<?> saveTransactions(@Valid @RequestBody TransactionRequest entity) {
 		try {
 			transactionService.saveTransaction(entity);
 			return ResponseEntity.status(HttpStatus.CREATED).body(null);
@@ -83,7 +83,7 @@ public class TransactionController {
 
 	private ResponseEntity<?> getTransactionsByType(TransactionType type) {
 		try {
-			return ResponseEntity.ok(transactionService.getTransactionByType(type));
+			return ResponseEntity.ok(transactionService.getTransactionsByType(type));
 		} catch (EntityNotFoundException ex) {
 			return HandleException.error(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
