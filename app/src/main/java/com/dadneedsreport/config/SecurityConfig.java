@@ -84,6 +84,7 @@ public class SecurityConfig {
 			"GET",
 			"DELETE",
 			"PUT",
+			"PATCH",
 			"OPTIONS"
 		));
 		UrlBasedCorsConfigurationSource configSource = new UrlBasedCorsConfigurationSource();
