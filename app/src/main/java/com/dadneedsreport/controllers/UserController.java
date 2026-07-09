@@ -26,8 +26,7 @@ public class UserController {
 	@PostMapping(value = "register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest dto) {
 		try {
-			userService.registerUser(dto);
-			return ResponseEntity.status(HttpStatus.CREATED).body(null);
+			return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(dto));
 		} catch (Exception ex) {
 			return HandleException.error(HttpStatus.BAD_REQUEST, "User already exists");
 		}

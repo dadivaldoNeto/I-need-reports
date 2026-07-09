@@ -7,7 +7,6 @@ import javax.money.MonetaryAmount;
 import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
 
-import com.dadneedsreport.config.SecurityConfig;
 import com.dadneedsreport.dto.DashboardResponse;
 import com.dadneedsreport.enums.TransactionType;
 import com.dadneedsreport.models.Transaction;

@@ -24,11 +24,14 @@ public class UserService {
 		this.jwtService = jwtService;
 	}
 
-	public void registerUser(UserRequest dto) throws Exception {
+	public Map<String, String> registerUser(UserRequest dto) throws Exception {
 		User user = new User();
 		user.setPassword(passwordEncoder.encode(dto.password()));
 		user.setUsername(dto.username());
 		userRepository.save(user);
+		Map<String, String> response = new HashMap<>();
+		response.put("token", jwtService.generateToken(user));
+		return response;
 	}
 
 	public Map<String, String> loginUser(UserRequest dto) throws UsernameNotFoundException, RuntimeException {

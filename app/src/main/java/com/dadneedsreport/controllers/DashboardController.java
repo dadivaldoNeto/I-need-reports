@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("api/v1/dashboard")
 public class DashboardController {
 	
-	final DashboardService dashboardService;
+	private final DashboardService dashboardService;
 
 	DashboardController(DashboardService dashboardService) {
 		this.dashboardService = dashboardService;
