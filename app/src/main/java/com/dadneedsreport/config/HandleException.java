@@ -52,6 +52,8 @@ public class HandleException {
 
 	@ExceptionHandler(Exception.class)
 	ResponseEntity<?> anyOtherError(Exception ex) {
+		if (ex instanceof RuntimeException)
+			return error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		System.out.println(ex.toString());
 		return error(HttpStatus.INTERNAL_SERVER_ERROR, otherError);
 	}

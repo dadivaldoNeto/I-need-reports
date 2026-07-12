@@ -7,13 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
 import com.dadneedsreport.models.Transaction;
+import com.dadneedsreport.models.User;
+
 import java.util.Optional;
 import com.dadneedsreport.enums.TransactionType;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 	@Modifying
 	@Transactional
-	Long deleteByID(Long id, Long userId);
+	Long deleteByID(Long id, User userId);
 
 	Page<Transaction> findAllByTypeAndUserId(TransactionType type, Long userId, Pageable pageable);
 

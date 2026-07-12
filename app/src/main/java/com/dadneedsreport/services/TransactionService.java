@@ -62,8 +62,7 @@ public class TransactionService {
 
 	// DELETE TRANSACTION BY ID ENDPOINT
 	public void deleteTransactionById(Long id) {
-		Long userId = getUser().getId();
-		if (incomeEntity.deleteByID(id, userId) <= 0)
+		if (incomeEntity.deleteByID(id, getUser()) <= 0)
 			throw new EntityNotFoundException(notFound);
 	}
 
@@ -84,7 +83,7 @@ public class TransactionService {
 		return response;
 	}
 
-	private User getUser() {
+	public User getUser() {
 		User user = userRepository.findById(JwtService.getUserId().longValue())
 				.orElseThrow(() -> new EntityNotFoundException("User Not Found"));
 		return user;

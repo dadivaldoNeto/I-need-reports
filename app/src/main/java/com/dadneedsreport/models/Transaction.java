@@ -35,24 +35,23 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
+	@NotBlank(message = "Must have a value")
 	private String title;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"))
 	private User user;
 
-	@NotNull
+	@NotNull(message = "Must have a value")
 	@Convert(converter = MoneyAmountConverter.class)
 	private MonetaryAmount amount;
 
-	@NotBlank
 	private String description;
 
-	@NotNull
+	@NotNull(message = "Must have a value")
 	private LocalDate createdAt;
 
-	@NotNull
+	@NotNull(message = "Must have a value")
 	private TransactionType type;
 
 	public void prepareToPersist(TransactionRequest entity, User user) {
